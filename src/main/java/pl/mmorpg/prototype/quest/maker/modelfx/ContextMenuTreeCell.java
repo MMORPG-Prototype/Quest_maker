@@ -12,6 +12,7 @@ import javafx.scene.control.TreeCell;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import pl.mmorpg.prototype.quest.maker.QuestMakerLaucher;
+import pl.mmorpg.prototype.quest.maker.controller.ChooseQuestTaskTypeController;
 import pl.mmorpg.prototype.quest.maker.helpers.QuestTaskFXContainer;
 
 public class ContextMenuTreeCell extends TreeCell<QuestTaskFXContainer>
@@ -48,6 +49,7 @@ public class ContextMenuTreeCell extends TreeCell<QuestTaskFXContainer>
 			{
 				FXMLLoader loader = new FXMLLoader();
 				loader.setLocation(QuestMakerLaucher.class.getResource(location));
+				loader.setController(new ChooseQuestTaskTypeController(getTreeView()));
 				try
 				{
 					return new Scene(loader.load());
@@ -67,5 +69,9 @@ public class ContextMenuTreeCell extends TreeCell<QuestTaskFXContainer>
 
 		if (!empty)
 			setText(item.toString());
+		else
+		{
+			setText(null);
+		}
 	}
 }

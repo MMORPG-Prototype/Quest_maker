@@ -1,9 +1,13 @@
 package pl.mmorpg.prototype.quest.maker.controller;
 
+import java.util.Collection;
+import java.util.Iterator;
+
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
+import javafx.scene.control.Control;
+import javafx.scene.control.Label;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
@@ -29,15 +33,37 @@ public class QuestOverviewController
 		treeQuestView.setRoot(rootItem);
 		treeQuestView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<TreeItem<QuestTaskFXContainer>>()
 		{
+			@SuppressWarnings("unchecked")
 			@Override
 			public void changed(ObservableValue<? extends TreeItem<QuestTaskFXContainer>> observable,
 					TreeItem<QuestTaskFXContainer> oldValue, TreeItem<QuestTaskFXContainer> newValue)
 			{
-				questPropertyControlsContainer.getChildren().add(new Button("Asdd"));
+				questPropertyControlsContainer.getChildren().clear();
+				Collection<Control> controls = newValue.getValue().produceControls();
+				Iterator<Control> iterator = controls.iterator();
+				for(int i=0; iterator.hasNext(); i++)
+				{
+					questPropertyControlsContainer.add(iterator.next(), 0, i);
+					questPropertyControlsContainer.add(new Label("Some value"), 1, i);
+				}
 			}
 		});
 		treeQuestView.getSelectionModel().select(0);
 		treeQuestView.setEditable(true);
+	}
+	
+	static String splitCamelCase(String source) 
+	{
+		String firstLetterLowercase = source.replaceAll
+				   (
+		      String.format("%s|%s|%s",
+		         "(?<=[A-Z])(?=[A-Z][a-z])",
+		         "(?<=[^A-Z])(?=[A-Z])",
+		         "(?<=[A-Za-z])(?=[^A-Za-z])"
+		      ),
+		      " "
+		   );
+		return firstLetterLowercase.substring(0, 1).toUpperCase() + firstLetterLowercase.substring(1);
 	}
 
 	private void setTreeQuestViewCellFactory()

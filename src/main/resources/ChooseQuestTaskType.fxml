@@ -6,7 +6,7 @@
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="128.0" prefWidth="219.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.mmorpg.prototype.quest.maker.controller.ChooseQuestTaskTypeController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="128.0" prefWidth="219.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Button layoutX="90.0" layoutY="61.0" mnemonicParsing="false" onAction="#onOkButton" onMouseClicked="#onOkButton" text="Ok" AnchorPane.bottomAnchor="5.0" />
       <ComboBox fx:id="questTaskTypesDropDownList" layoutX="17.0" layoutY="49.0" prefWidth="150.0" AnchorPane.leftAnchor="17.0" AnchorPane.rightAnchor="17.0" />
