@@ -1,18 +1,15 @@
 package pl.mmorpg.prototype.quest.maker.modelfx;
 
-import java.io.IOException;
-
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TreeCell;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import pl.mmorpg.prototype.quest.maker.QuestMakerLaucher;
 import pl.mmorpg.prototype.quest.maker.controller.ChooseQuestTaskTypeController;
+import pl.mmorpg.prototype.quest.maker.helpers.CustomFXMLLoader;
 import pl.mmorpg.prototype.quest.maker.helpers.QuestTaskFXContainer;
 
 public class ContextMenuTreeCell extends TreeCell<QuestTaskFXContainer>
@@ -35,7 +32,7 @@ public class ContextMenuTreeCell extends TreeCell<QuestTaskFXContainer>
 			{
 				if (getTreeItem() == null)
 					return;
-				Scene scene = tryLoadingScene("/ChooseQuestTaskType.fxml");
+				Scene scene = tryLoadingScene("ChooseQuestTaskType.fxml");
 				Stage stage = new Stage();
 				stage.setTitle("New quest task");
 				stage.setScene(scene);
@@ -47,16 +44,7 @@ public class ContextMenuTreeCell extends TreeCell<QuestTaskFXContainer>
 
 			private Scene tryLoadingScene(String location)
 			{
-				FXMLLoader loader = new FXMLLoader();
-				loader.setLocation(QuestMakerLaucher.class.getResource(location));
-				loader.setController(new ChooseQuestTaskTypeController(getTreeView()));
-				try
-				{
-					return new Scene(loader.load());
-				} catch (IOException e)
-				{
-					throw new RuntimeException(e);
-				}
+				return new Scene(CustomFXMLLoader.load(location, new ChooseQuestTaskTypeController(getTreeView())));
 			}
 		});
 		return addMenuItem;
