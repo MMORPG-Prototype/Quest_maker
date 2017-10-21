@@ -10,6 +10,12 @@ public class RootLayoutController
 	@FXML
 	private void onSaveOption()
 	{
-		System.out.println("close option pressed");
+		questOverviewController.save("someFilePath.json");
+	}
+	
+	@FXML
+	private void onLoadOption()
+	{
+		
 	}
 }

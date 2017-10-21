@@ -1,7 +1,13 @@
 package pl.mmorpg.prototype.quest.maker.controller;
 
-import java.util.Collection;
+import java.io.IOException;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -14,9 +20,11 @@ import javafx.scene.control.TreeView;
 import javafx.scene.layout.GridPane;
 import javafx.util.Callback;
 import pl.mmorpg.prototype.quest.maker.helpers.QuestTaskFXContainer;
+import pl.mmorpg.prototype.quest.maker.model.PropertyContainer;
 import pl.mmorpg.prototype.quest.maker.modelfx.ContextMenuTreeCell;
 import pl.mmorpg.prototype.quest.maker.modelfx.QuestTaskTreeItem;
 import pl.mmorpg.prototype.server.quests.AcceptQuestTask;
+import pl.mmorpg.prototype.server.quests.QuestTask;
 
 public class QuestOverviewController
 {
@@ -33,18 +41,18 @@ public class QuestOverviewController
 		treeQuestView.setRoot(rootItem);
 		treeQuestView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<TreeItem<QuestTaskFXContainer>>()
 		{
-			@SuppressWarnings("unchecked")
+
 			@Override
 			public void changed(ObservableValue<? extends TreeItem<QuestTaskFXContainer>> observable,
 					TreeItem<QuestTaskFXContainer> oldValue, TreeItem<QuestTaskFXContainer> newValue)
 			{
 				questPropertyControlsContainer.getChildren().clear();
-				Collection<Control> controls = newValue.getValue().produceControls();
-				Iterator<Control> iterator = controls.iterator();
+				Map<String, Control> controls = newValue.getValue().getControls();
+				Iterator<Entry<String, Control>> iterator = controls.entrySet().iterator();
 				for(int i=0; iterator.hasNext(); i++)
 				{
-					questPropertyControlsContainer.add(iterator.next(), 0, i);
-					questPropertyControlsContainer.add(new Label("Some value"), 1, i);
+					Entry<String, Control> entry = iterator.next();
+					questPropertyControlsContainer.addRow(i, new Label(entry.getKey()), entry.getValue());
 				}
 			}
 		});
@@ -77,6 +85,52 @@ public class QuestOverviewController
 				return cell;
 			}
 		});
+	}
+
+	public void save(String filepath)
+	{
+		TreeItem<QuestTaskFXContainer> root = treeQuestView.getRoot();
+		PropertyContainer fullPropertyContainer = createFullPropertyContainer(root);
+		String serialized = serialize(fullPropertyContainer);
+		validate(serialized);
+		System.out.println(serialized);
+	}
+
+	private void validate(String serialized)
+	{
+		ObjectMapper jsonConverter = new ObjectMapper();
+		TypeReference<QuestTask> typeRef = new TypeReference<QuestTask>() {};
+		try
+		{
+			QuestTask readValue = (QuestTask)jsonConverter.readValue(serialized, typeRef);
+			System.out.println(readValue);
+		} catch (IOException e)
+		{
+			throw new RuntimeException(e);
+		}
+	}
+
+	private String serialize(PropertyContainer fullPropertyContainer)
+	{
+		ObjectMapper jsonConverter = new ObjectMapper();
+		try
+		{
+			return jsonConverter.writerWithDefaultPrettyPrinter().writeValueAsString(fullPropertyContainer.getProperties());
+		} catch (JsonProcessingException e)
+		{
+			throw new RuntimeException(e);
+		}
+	}
+	
+	public PropertyContainer createFullPropertyContainer(TreeItem<QuestTaskFXContainer> root)
+	{
+		PropertyContainer fullPropertyContainer = root.getValue().generatePropertyContainer();
+		for(TreeItem<QuestTaskFXContainer> child : root.getChildren())
+		{
+			PropertyContainer propertyContainer = createFullPropertyContainer(child);
+			fullPropertyContainer.nest("nextTasks", propertyContainer);
+		}
+		return fullPropertyContainer;
 	}
 
 }
