@@ -1,4 +1,4 @@
-package pl.mmorpg.prototype.quest.maker.model;
+package pl.mmorpg.prototype.quest.maker.helpers;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -12,7 +12,7 @@ import pl.mmorpg.prototype.server.quests.QuestTask;
 
 public class QuestTaskFXContainer
 {
-	private Class<? extends QuestTask> questTaskType;
+	private final Class<? extends QuestTask> questTaskType;
 	private Map<String, Object> properties;
 
 	public QuestTaskFXContainer(Class<? extends QuestTask> questTaskType)
@@ -32,6 +32,11 @@ public class QuestTaskFXContainer
 		return Arrays.stream(fields)
 			.map(field -> new Button(field.getName()))
 			.collect(Collectors.toList());
+	}
+	
+	public Class<? extends QuestTask> getQuestTaskType()
+	{
+		return questTaskType;
 	}
 	
 }
