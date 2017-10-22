@@ -9,8 +9,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Labeled;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputControl;
+import pl.mmorpg.prototype.quest.maker.modelfx.DialogMakerStarterButton;
 import pl.mmorpg.prototype.quest.maker.modelfx.IntegerTextField;
 import pl.mmorpg.prototype.quest.maker.modelfx.MonsterIdentifierComboBox;
+import pl.mmorpg.prototype.server.quests.dialog.DialogStep;
 
 public class QuestTaskControlsUtils
 {
@@ -26,14 +28,20 @@ public class QuestTaskControlsUtils
 				fieldType == Long.class)
 			return new IntegerTextField();
 		
+		if(fieldType == DialogStep.class)
+			return new DialogMakerStarterButton();
+		
 		if(ClassUtils.isPrimitiveOrWrapper(fieldType) || fieldType == String.class)
 			return new TextField();
+		
 
 		return new Label("Control for this field type is not implemented yet");
 	}
 	
 	public static Object getControlInput(Control control)
 	{
+		if(control instanceof DialogMakerStarterButton)
+			return ((DialogMakerStarterButton)control).getDialogData();
 		if(control instanceof IntegerTextField)
 			return ((IntegerTextField)control).getInputValue();
 		if(control instanceof TextInputControl)

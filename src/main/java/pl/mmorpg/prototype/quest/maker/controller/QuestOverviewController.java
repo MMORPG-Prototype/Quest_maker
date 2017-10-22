@@ -19,9 +19,11 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.layout.GridPane;
 import javafx.util.Callback;
+import pl.mmorpg.prototype.quest.maker.helpers.Dictionary;
 import pl.mmorpg.prototype.quest.maker.helpers.QuestTaskFXContainer;
 import pl.mmorpg.prototype.quest.maker.model.PropertyContainer;
 import pl.mmorpg.prototype.quest.maker.modelfx.ContextMenuTreeCell;
+import pl.mmorpg.prototype.quest.maker.modelfx.QuestTaskFXContainerContextMenuTreeCell;
 import pl.mmorpg.prototype.quest.maker.modelfx.QuestTaskTreeItem;
 import pl.mmorpg.prototype.server.quests.AcceptQuestTask;
 import pl.mmorpg.prototype.server.quests.QuestTask;
@@ -33,6 +35,8 @@ public class QuestOverviewController
 
 	@FXML
 	private GridPane questPropertyControlsContainer;
+	
+	private final Dictionary dictionary = new Dictionary(); 
 
 	public void initialize()
 	{
@@ -52,7 +56,8 @@ public class QuestOverviewController
 				for(int i=0; iterator.hasNext(); i++)
 				{
 					Entry<String, Control> entry = iterator.next();
-					questPropertyControlsContainer.addRow(i, new Label(entry.getKey()), entry.getValue());
+					Label nameLabel = new Label(dictionary.translate(entry.getKey()));
+					questPropertyControlsContainer.addRow(i, nameLabel, entry.getValue());
 				}
 			}
 		});
@@ -60,20 +65,6 @@ public class QuestOverviewController
 		treeQuestView.setEditable(true);
 	}
 	
-	static String splitCamelCase(String source) 
-	{
-		String firstLetterLowercase = source.replaceAll
-				   (
-		      String.format("%s|%s|%s",
-		         "(?<=[A-Z])(?=[A-Z][a-z])",
-		         "(?<=[^A-Z])(?=[A-Z])",
-		         "(?<=[A-Za-z])(?=[^A-Za-z])"
-		      ),
-		      " "
-		   );
-		return firstLetterLowercase.substring(0, 1).toUpperCase() + firstLetterLowercase.substring(1);
-	}
-
 	private void setTreeQuestViewCellFactory()
 	{
 		treeQuestView.setCellFactory(new Callback<TreeView<QuestTaskFXContainer>, TreeCell<QuestTaskFXContainer>>()
@@ -81,7 +72,7 @@ public class QuestOverviewController
 			@Override
 			public TreeCell<QuestTaskFXContainer> call(TreeView<QuestTaskFXContainer> treeView)
 			{
-				ContextMenuTreeCell cell = new ContextMenuTreeCell();
+				ContextMenuTreeCell<QuestTaskFXContainer> cell = new QuestTaskFXContainerContextMenuTreeCell();
 				return cell;
 			}
 		});
@@ -92,18 +83,18 @@ public class QuestOverviewController
 		TreeItem<QuestTaskFXContainer> root = treeQuestView.getRoot();
 		PropertyContainer fullPropertyContainer = createFullPropertyContainer(root);
 		String serialized = serialize(fullPropertyContainer);
-		validate(serialized);
+		QuestTask questTask = validate(serialized);
 		System.out.println(serialized);
 	}
 
-	private void validate(String serialized)
+	private QuestTask validate(String serialized)
 	{
 		ObjectMapper jsonConverter = new ObjectMapper();
 		TypeReference<QuestTask> typeRef = new TypeReference<QuestTask>() {};
 		try
 		{
 			QuestTask readValue = (QuestTask)jsonConverter.readValue(serialized, typeRef);
-			System.out.println(readValue);
+			return readValue;
 		} catch (IOException e)
 		{
 			throw new RuntimeException(e);

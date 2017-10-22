@@ -7,6 +7,7 @@ import java.net.URLDecoder;
 import javafx.fxml.FXMLLoader;
 import pl.mmorpg.prototype.quest.maker.QuestMakerLauncher;
 
+//Workaround for single jar destributions
 public class CustomFXMLLoader
 {
 	public static <T> T load(String path)
@@ -28,9 +29,11 @@ public class CustomFXMLLoader
 				URL url = QuestMakerLauncher.class.getProtectionDomain().getCodeSource().getLocation();
 				String jarPath = URLDecoder.decode(url.getFile(), "UTF-8");
 				url = new URL("jar:file://" + jarPath + "!/" + path);
-				loader.setRoot(null);
-				loader.setLocation(url);
-				return loader.load();
+				FXMLLoader newLoader = new FXMLLoader();
+				if(loader.getController() != null)
+					newLoader.setController(loader.getController());
+				newLoader.setLocation(url);
+				return newLoader.load();
 			} catch (IOException e1)
 			{
 				throw new RuntimeException(e1);
@@ -39,7 +42,7 @@ public class CustomFXMLLoader
 
 	}
 
-	public static <T> T  load(String path, Object controller)
+	public static <T> T load(String path, Object controller)
 	{
 		FXMLLoader loader = new FXMLLoader();
 		loader.setController(controller);
