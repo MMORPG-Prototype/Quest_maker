@@ -13,7 +13,7 @@ public abstract class ContextMenuTreeCell<T> extends TreeCell<T>
 	public ContextMenuTreeCell(String addMenuItemMessage)
 	{
 		MenuItem addMenuItem = createAddMenuItem(addMenuItemMessage);
-		addMenu.getItems().add(addMenuItem);
+		addMenu.getItems().add(addMenuItem); 
 		setContextMenu(addMenu);
 	}
 

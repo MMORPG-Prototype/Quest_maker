@@ -50,7 +50,7 @@ public class ChooseQuestTaskTypeController
 		treeView.getSelectionModel().getSelectedItem().getChildren().add(newQuestTask);
 		treeView.getSelectionModel().select(newQuestTask);
 		closeWindow();
-	}
+	} 
 
 	private Class<? extends QuestTask> getSelectedQuestType()
 	{

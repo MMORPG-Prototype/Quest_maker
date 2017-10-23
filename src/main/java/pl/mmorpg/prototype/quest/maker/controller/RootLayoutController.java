@@ -10,7 +10,7 @@ public class RootLayoutController
 	@FXML
 	private void onSaveOption()
 	{
-		questOverviewController.save("someFilePath.json");
+		questOverviewController.save();
 	}
 	
 	@FXML

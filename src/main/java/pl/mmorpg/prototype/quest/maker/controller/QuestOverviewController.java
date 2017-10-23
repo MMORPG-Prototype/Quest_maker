@@ -12,13 +12,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.layout.GridPane;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import javafx.util.Callback;
+import pl.mmorpg.prototype.quest.maker.helpers.CustomFXMLLoader;
 import pl.mmorpg.prototype.quest.maker.helpers.Dictionary;
 import pl.mmorpg.prototype.quest.maker.helpers.QuestTaskFXContainer;
 import pl.mmorpg.prototype.quest.maker.model.PropertyContainer;
@@ -78,16 +83,34 @@ public class QuestOverviewController
 		});
 	}
 
-	public void save(String filepath)
+	public void save()
+	{
+		QuestTask questTask = generateQuestTaskObject();
+		openQuestSaverStage(questTask);
+	}
+
+	private void openQuestSaverStage(QuestTask questTask)
+	{
+		QuestSaverController questSaverController = new QuestSaverController(questTask);
+		Stage questSaverStage = new Stage();
+		questSaverStage.initModality(Modality.WINDOW_MODAL);
+		questSaverStage.initOwner(treeQuestView.getScene().getWindow());
+		questSaverStage.resizableProperty().setValue(false);
+		Parent questSaverScene = CustomFXMLLoader.load("QuestSaver.fxml", questSaverController);
+		questSaverStage.setScene(new Scene(questSaverScene));
+		questSaverStage.show();
+	}
+
+	private QuestTask generateQuestTaskObject()
 	{
 		TreeItem<QuestTaskFXContainer> root = treeQuestView.getRoot();
 		PropertyContainer fullPropertyContainer = createFullPropertyContainer(root);
-		String serialized = serialize(fullPropertyContainer);
-		QuestTask questTask = validate(serialized);
-		System.out.println(serialized);
+		String serialized = serialize(fullPropertyContainer.getProperties());
+		QuestTask questTask = deserialize(serialized);
+		return questTask;
 	}
 
-	private QuestTask validate(String serialized)
+	private QuestTask deserialize(String serialized)
 	{
 		ObjectMapper jsonConverter = new ObjectMapper();
 		TypeReference<QuestTask> typeRef = new TypeReference<QuestTask>() {};
@@ -101,12 +124,12 @@ public class QuestOverviewController
 		}
 	}
 
-	private String serialize(PropertyContainer fullPropertyContainer)
+	private String serialize(Object object)
 	{
 		ObjectMapper jsonConverter = new ObjectMapper();
 		try
 		{
-			return jsonConverter.writerWithDefaultPrettyPrinter().writeValueAsString(fullPropertyContainer.getProperties());
+			return jsonConverter.writerWithDefaultPrettyPrinter().writeValueAsString(object);
 		} catch (JsonProcessingException e)
 		{
 			throw new RuntimeException(e);

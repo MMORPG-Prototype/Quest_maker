@@ -75,7 +75,7 @@ public class DialogOverviewController
 		playerAnwserTextArea.setMaxHeight(75);
 		npcSpeechTextArea.setMinHeight(494);
 		playerAnwserTextArea.setMaxWidth(394);
-		npcSpeechTextArea.setMaxWidth(394);
+		npcSpeechTextArea.setMaxWidth(394); 
 	}
 	
 	private void addRootElementToDialogTree()

@@ -12,8 +12,9 @@ import pl.mmorpg.prototype.server.quests.dialog.DialogStep;
 
 public class DialogMakerStarterButton extends Button
 {
+	private Stage stage = null;
 	private final DialogOverviewController dialogMakerController = new DialogOverviewController();
-	
+
 	public DialogMakerStarterButton()
 	{
 		super("Modify...");
@@ -26,8 +27,8 @@ public class DialogMakerStarterButton extends Button
 			}
 		});
 	}
-	
-	private void openDialogMakerDialog()
+
+	private Stage createDialogMakerDialog()
 	{
 		Stage stage = new Stage();
 		stage.setTitle("Dialog maker");
@@ -36,9 +37,17 @@ public class DialogMakerStarterButton extends Button
 		stage.initModality(Modality.WINDOW_MODAL);
 		stage.initOwner(this.getScene().getWindow());
 		stage.resizableProperty().setValue(false);
+		return stage;
+	}
+
+	private void openDialogMakerDialog()
+	{
+		if(stage == null)
+			stage = createDialogMakerDialog();
+		
 		stage.show();
 	}
-	
+
 	public DialogStep getDialogData()
 	{
 		return dialogMakerController.getDialogData();
