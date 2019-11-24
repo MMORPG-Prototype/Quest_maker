@@ -9,5 +9,5 @@ import pl.mmorpg.prototype.clientservercommon.ItemIdentifiers;
 public class ItemInfo
 {
 	private ItemIdentifiers itemIdentifier;
-	private Integer numberOfItems;
+	private Integer numberOfItems = 1;
 }
