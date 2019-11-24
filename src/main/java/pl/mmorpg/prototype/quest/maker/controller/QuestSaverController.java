@@ -31,7 +31,7 @@ import pl.mmorpg.prototype.server.quests.QuestTask;
 public class QuestSaverController
 {
 	private final ObservableList<GameItem> gameItemsDefinitions;
-	private final ObservableList<GameItem> choosenItems;
+	private final ObservableList<GameItem> chosenItems;
 
 	@FXML
 	private TextArea descriptionTextArea;
@@ -47,9 +47,9 @@ public class QuestSaverController
 		this.questTask = questTask;
 		gameItemsDefinitions = FXCollections
 				.unmodifiableObservableList(FXCollections.observableArrayList(getAllGameItems()));
-		choosenItems = FXCollections.observableArrayList();
+		chosenItems = FXCollections.observableArrayList();
 		for(int i=0; i<4; i++)
-			choosenItems.add(new GameItem(Item.class));
+			chosenItems.add(new GameItem(Item.class));
 	}
 
 	private Collection<GameItem> getAllGameItems()
@@ -64,7 +64,7 @@ public class QuestSaverController
 	{
 		itemRewardList.setEditable(true);		
 		itemRewardList.setCellFactory(ComboBoxListCell.forListView(gameItemsDefinitions));
-		itemRewardList.setItems(choosenItems);
+		itemRewardList.setItems(chosenItems);
 	}
 	
 	@FXML
@@ -72,9 +72,9 @@ public class QuestSaverController
 	{
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.setTitle("Choose save location");
-		File choosenFile = fileChooser.showSaveDialog(descriptionTextArea.getScene().getWindow());
+		File chosenFile = fileChooser.showSaveDialog(descriptionTextArea.getScene().getWindow());
 		Quest quest = createQuestObject();
-		saveQuest(choosenFile, quest);
+		saveQuest(chosenFile, quest);
 	}
 
 	private Quest createQuestObject()
@@ -82,13 +82,13 @@ public class QuestSaverController
 		String questName = getQuestName();
 		String description = descriptionTextArea.getText();
 		Integer goldReward = Integer.valueOf(goldRewardTextArea.getText());
-		Collection<ItemInfo> choosenItems = getChoosenItems();
-		return new Quest(questName, description, questTask, goldReward, choosenItems);
+		Collection<ItemInfo> chosenItems = getChosenItems();
+		return new Quest(questName, description, questTask, goldReward, chosenItems);
 	}
 
-	private Collection<ItemInfo> getChoosenItems()
+	private Collection<ItemInfo> getChosenItems()
 	{
-		return this.choosenItems.stream()
+		return this.chosenItems.stream()
 					.filter(item -> !item.isBaseType())
 					.map(GameItem::generateItemInfo)
 					.collect(Collectors.toList());
@@ -107,16 +107,16 @@ public class QuestSaverController
 		}
 	}
 
-	private void saveQuest(File choosenFile, Quest quest)
+	private void saveQuest(File chosenFile, Quest quest)
 	{
 		String data = serialize(quest);
-		try(PrintWriter writer = new PrintWriter(choosenFile.getAbsolutePath()))
+		try(PrintWriter writer = new PrintWriter(chosenFile.getAbsolutePath()))
 		{
 			writer.print(data);
 		} catch (FileNotFoundException e)
 		{
 			throw new RuntimeException(e);
-		};
+		}
 	}
 
 	private String serialize(Object object)

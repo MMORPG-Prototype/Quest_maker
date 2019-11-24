@@ -34,8 +34,6 @@ public abstract class ContextMenuTreeCell<T> extends TreeCell<T>
 		if (!empty)
 			setText(item.toString());
 		else
-		{
 			setText(null);
-		}
 	}
 }

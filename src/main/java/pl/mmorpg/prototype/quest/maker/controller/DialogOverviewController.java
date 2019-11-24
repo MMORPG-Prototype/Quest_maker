@@ -37,30 +37,12 @@ public class DialogOverviewController
 
 	private void setDialogTreeCellFactory()
 	{
-		dialogTree.setCellFactory(new Callback<TreeView<DialogStepFXContainer>, TreeCell<DialogStepFXContainer>>()
-		{
-			@Override
-			public TreeCell<DialogStepFXContainer> call(TreeView<DialogStepFXContainer> treeView)
-			{
-				return new DialogStepFXContainerContextMenuTreeCell();
-			}
-		});
+		dialogTree.setCellFactory(treeView -> new DialogStepFXContainerContextMenuTreeCell());
 	}
 
 	private void setDialogTreeOnSelectionChange()
 	{
-		dialogTree.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<TreeItem<DialogStepFXContainer>>()
-		{
-
-			@Override
-			public void changed(ObservableValue<? extends TreeItem<DialogStepFXContainer>> observable,
-					TreeItem<DialogStepFXContainer> oldValue, TreeItem<DialogStepFXContainer> newValue)
-			{
-				onSelectionChange(newValue);
-			}
-
-
-		});
+		dialogTree.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> onSelectionChange(newValue));
 	}
 
 	private void onSelectionChange(TreeItem<DialogStepFXContainer> newValue)

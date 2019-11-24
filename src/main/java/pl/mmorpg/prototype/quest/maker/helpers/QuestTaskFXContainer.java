@@ -28,8 +28,7 @@ public class QuestTaskFXContainer
 		Set<Field> allFields = ReflectionUtils.getAllFields(questTaskType);
 		return allFields.stream()
 				.filter(field -> field.getAnnotation(QuestMakerIgnore.class) == null)
-				.collect(Collectors.toMap(
-						field -> field.getName(), QuestTaskControlsUtils::produceControl));
+				.collect(Collectors.toMap(Field::getName, QuestTaskControlsUtils::produceControl));
 	}
 
 	@Override

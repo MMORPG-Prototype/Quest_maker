@@ -1,7 +1,5 @@
 package pl.mmorpg.prototype.quest.maker.modelfx;
 
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.stage.Modality;
@@ -18,14 +16,7 @@ public class DialogMakerStarterButton extends Button
 	public DialogMakerStarterButton()
 	{
 		super("Modify...");
-		setOnAction(new EventHandler<ActionEvent>()
-		{
-			@Override
-			public void handle(ActionEvent event)
-			{
-				openDialogMakerDialog();
-			}
-		});
+		setOnAction(event -> openDialogMakerDialog());
 	}
 
 	private Stage createDialogMakerDialog()
